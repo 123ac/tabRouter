@@ -124,9 +124,9 @@
                      //登录时加载样式
                      const loading = this.$loading({
                        lock: true,
-                       text: 'Loading',
-                       spinner: 'el-icon-loading',
-                       background: 'rgba(0, 0, 0, 0.7)'
+                       // text: 'Loading',
+                       // spinner: 'el-icon-loading',
+                       background: 'rgba(255, 255, 255, 0.7)' 
                      });
                      
                      this.$ajax
@@ -161,8 +161,27 @@
     }
 </script>
 
+<style>
+    .el-loading-spinner {
+        /* // 这个是自己想设置的 gif 加载动图 */
+      background-image:url('../assets/img/loading.gif'); 
+        /* //设置背景图 不重复 */
+      background-repeat: no-repeat; 
+      height:10%;
+      /* //设置背景 定位  为居中 */
+      background-position:center; 
+       /* //覆盖 element-ui  默认的 50%    因为此处设置了height:100%,所以不设置的话，会只显示一半，因为被top顶下去了 */
+      top:0; 
+     
+    }
+    .el-loading-spinner .circular {
+        /* //隐藏 之前  element-ui  默认的 loading 动画 */
+      display: none;  
+    }
+</style>
 <!-- 内部样式 -->
 <style lang="less" scoped >
+    
      
     
     .login_container{

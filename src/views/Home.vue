@@ -31,11 +31,12 @@
                          :name="item.route"
                         >
                        </el-tab-pane>
+                       <div class="content-wrap">
+                         <router-view/>
+                       </div>
                      </el-tabs>
                    </div>
-                   <div class="content-wrap">
-                     <router-view/>
-                   </div>
+                   
                </div>
                 <ul
                               v-show="contextMenuVisible"
@@ -166,6 +167,7 @@ export default {
   },
   watch:{
     '$route'(to,from){
+         
         //判断路由是否已经打开
         //已经打开的 ，将其置为active
         //未打开的，将其放入队列里

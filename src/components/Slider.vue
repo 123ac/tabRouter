@@ -52,7 +52,7 @@ export default {
           icon:'el-icon-s-tools',
           children:[
             {
-              index:'/page1',
+              index:'/user',
               childtitle:'用户管理',
               icon:'el-icon-user'
             },

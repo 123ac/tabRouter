@@ -16,24 +16,18 @@ Vue.config.productionTip = false
 
 import { Message } from 'element-ui';
 
+//引入日期标签格式化插件
+import moment from 'moment'
+Vue.use(require('vue-moment'));
+Vue.prototype.moment = moment
+Vue.filter('dateYMDHMSFormat',function(dateStr,pattern='YYYY-MM-DD HH:mm:ss'){
+  return moment(dateStr).format(pattern);
+})
 
 
 import axios from 'axios' //引入axios
 import qs from 'qs'
-
-
-// let token="";
-// axios.defaults.withCredentials = false;
-// axios.defaults.headers.common['token'] = token;
-// // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';//配置请求头
-// axios.defaults.transformRequest = [
-//   function (data) {
-//     return qs.stringify(data)
-//   }
-// ];
-
-
-
+  
 var base="http://localhost:8090"
 export const POST = (url, params) => {
    axios.defaults.transformRequest = [
@@ -87,11 +81,11 @@ axios.interceptors.response.use(function (response) {
   else if (error.response.status == 401) {
     //没有token需要登录
     Message.error('登录凭证失效，请重新登录！'); 
-    // window.location.href = "/login";
+    window.location.href = "/login";
   } else if (error.response.status == 403) {
      Message.error('token过期，请重新登录！');
      localStorage.removeItem("token"); 
-     // window.location.href = "/login";
+     window.location.href = "/login";
   }  
   return Promise.reject(error);
 })
