@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-import main11 from './views/main11.vue'
+import main from './views/main.vue'
 import user from './views/user.vue'
 import page2 from './views/page2.vue'
 import page3 from './views/page3.vue'
@@ -24,7 +24,7 @@ export default new Router({
         {
           path: 'main',
           name: '首页',
-          component: main11
+          component: main
         },
         {
           path: 'user',

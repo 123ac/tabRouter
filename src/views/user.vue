@@ -146,7 +146,7 @@
            components:{
                UserInfoAdd
            },
-         name: 'Main',
+         name: 'user',
          data() {
               return {
                 value:'',
@@ -158,15 +158,7 @@
                 currentPage:1,  
                  
                 // 用户信息集合 静态数据
-                userList: [{
-                          userId: '1',
-                          departmentName: '研发部',
-                          nickname: '张小虎',
-                          sex:1,
-                          birthday:"2016-05-02",
-                          phone:"13452850922",
-                          email:"13452850922@qq.com"
-                        }],
+                userList: [],
                 departments: [],
                 UserInfoVo:{
                       "depId": "",

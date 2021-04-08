@@ -31,8 +31,12 @@
                          :name="item.route"
                         >
                        </el-tab-pane>
-                       <div class="content-wrap">
-                         <router-view/>
+                       <div class="content-wrap"> 
+                       <!-- 缓存页面不刷新 -->
+                        <keep-alive  :include="includeList"> 
+                            <router-view></router-view>
+                        </keep-alive>
+                         
                        </div>
                      </el-tabs>
                    </div>
@@ -57,17 +61,20 @@
 // @ is an alias to /src
 import Slider from '@/components/Slider.vue'
 import navTop from '@/components/Header.vue'
+import store from '../store.js'
+
 export default {
   name: 'Home',
   components: {
-    Slider,navTop
+    Slider,navTop,store
   },
   data(){
     return{
         contextMenuVisible:false,
         currentContextTabId:'',
         left:0,
-        top:0,
+        top:0, 
+        includeList:[]
     }
   }, 
   mounted () {
@@ -78,30 +85,30 @@ export default {
       
     // 刷新时以当前路由做为tab加入tabs
     // 当前路由不是首页时，添加首页以及另一页到store里，并设置激活状态
-    // 当当前路由是首页时，添加首页到store，并设置激活状态
+    // 当当前路由是首页时，添加首页到store，并设置激活状态 
     if (this.$route.path != '/' && this.$route.path != '/main') {
-      console.log('1');
+      // console.log('1'); 
       this.$store.commit('add_tabs', {route: '/main', name: '首页'}); //添加到标签页中
       this.$store.commit('set_active_index', '/main');//激活显示页面
       
       this.$store.commit('add_tabs', {route: this.$route.path , name: this.$route.name });
       this.$store.commit('set_active_index', this.$route.path);
     } else {
-      console.log('2');
+      // console.log('2');
       this.$store.commit('add_tabs', {route: '/main', name: '首页'}); 
       this.$router.push('/');
     }
 
+    this.updateIncludeList();
   }, 
   methods:{
-      
         // 标签页右击菜单
         openContextMenu(e) {
            //console.log(e.srcElement);
            if (e.srcElement.id) {
              let currentContextTabId = e.srcElement.id.split("-")[1];
              this.contextMenuVisible = true;
-             console.info("标签id："+currentContextTabId);
+             // console.info("标签id："+currentContextTabId);
              this.$store.commit("saveCurContextTabId", currentContextTabId);
              this.currentContextTabId=currentContextTabId;
              this.left = e.clientX;
@@ -112,11 +119,13 @@ export default {
         closeAllTabs() {
           this.$store.commit("closeAllTabs");
           this.contextMenuVisible = false;
+           this.updateIncludeList();
         },
         // 关闭其它标签页
         closeOtherTabs(par) {
           this.$store.commit("closeOtherTabs", par);
           this.contextMenuVisible = false;
+           this.updateIncludeList();
         }, 
         
         
@@ -127,13 +136,15 @@ export default {
     
     //tab标签点击时，切换相应的路由
     tabClick(tab){
-      console.log("tab",tab);
+      // console.log("tab",tab);
       console.log('active',this.activeIndex);
       this.$router.push({path: this.activeIndex});
     },
     //移除tab标签
     tabRemove(targetName){
-      console.log("tabRemove",targetName);
+       console.log("tabRemove",targetName);
+      
+      this.blackList=targetName;
       //首页不删
       if(targetName == '/'||targetName == '/main'){
         return
@@ -141,15 +152,26 @@ export default {
       this.$store.commit('delete_tabs', targetName);
       if (this.activeIndex === targetName) {
         // 设置当前激活的路由
-        console.info("当前标签："+this.openTab.length)
+        // console.info("当前标签："+this.openTab.length)
         if (this.openTab && this.openTab.length >= 1) {
-          console.log('=============',this.openTab[this.openTab.length-1].route)
+          // console.log('=============',this.openTab[this.openTab.length-1].route)
           this.$store.commit('set_active_index', this.openTab[this.openTab.length-1].route);
           this.$router.push({path: this.activeIndex});
         } else {
           this.$router.push({path: '/'});
         }
       }
+       this.updateIncludeList();
+    },
+    //更新缓存白名单
+    updateIncludeList(){
+        var arr=[];
+        for (var i = 0; i < this.openTab.length; i++) {
+            var temp=this.openTab[i].route.replace("/","");
+            console.log("temp:"+temp);
+            arr.push(temp)  
+        }
+        this.includeList=arr;
     }
   },
   computed: {
@@ -174,10 +196,10 @@ export default {
         let flag = false;
         for(let item of this.openTab){
           console.log("item.name",item.name)
-          console.log("t0.name",to.name)
+          // console.log("t0.name",to.name)
 
           if(item.name === to.name){
-            console.log('to.path',to.path);
+            // console.log('to.path',to.path);
             this.$store.commit('set_active_index',to.path)
             flag = true;
             break;
@@ -185,11 +207,12 @@ export default {
         }
 
         if(!flag){
-          console.log('to.path',to.path);
+          // console.log('to.path',to.path);
           this.$store.commit('add_tabs', {route: to.path, name: to.name});
           this.$store.commit('set_active_index', to.path);
+         
         }
-
+        this.updateIncludeList();
     }
   }
 

@@ -21,17 +21,27 @@
                 <span slot="title">首页</span>
               </el-menu-item>
                
-              <el-submenu v-for="(item,index) in menuList" :key="index" :index='item.id'>
-                <template slot="title">
-                  <i :class="item.icon"></i>
-                  <span>{{item.title}}</span>
-                </template>
-                <el-menu-item-group   >
-                  <el-menu-item v-for="child in item.children" :key="child.id" :index='child.index' >
-                    <i :class="child.icon"></i><span>{{child.childtitle}}</span>
-                  </el-menu-item>
-                </el-menu-item-group>
-              </el-submenu>
+               <el-submenu  v-for="(item,index) in menuList" 
+                             :key="index" 
+                             :index='item.id'
+                             v-if="item.show && item.children!=''">
+                        <!-- 主菜单 -->
+                      <template slot="title">
+                        <i :class="item.icon"></i>
+                        <span>{{item.title}}</span>
+                      </template>
+                      <!-- 子菜单 -->
+                      <el-menu-item-group >
+                        <el-menu-item v-for="child in item.children" 
+                                      :key="child.id" 
+                                      :index='child.index' 
+                                      v-if="child.show" >
+                          <i :class="child.icon"></i><span>{{child.childtitle}}</span>
+                        </el-menu-item>
+                      </el-menu-item-group> 
+                      
+               </el-submenu>
+              
               
             </el-menu>
     </el-aside>
@@ -50,16 +60,19 @@ export default {
           id:'1',
           title: '系统管理',
           icon:'el-icon-s-tools',
+          show:true,
           children:[
             {
               index:'/user',
               childtitle:'用户管理',
-              icon:'el-icon-user'
+              icon:'el-icon-user',
+              show:true,//是否显示子菜单页面
             },
             {
               index:'/page2',
               childtitle:'权限管理',
-              icon:'el-icon-star-off'
+              icon:'el-icon-star-off',
+              show:true,
             },
           ]
         },
@@ -67,16 +80,19 @@ export default {
           id:'2',
           title: '日志管理',
           icon:'el-icon-message-solid',
+          show:true,
           children:[
             {
               index:'/page3',
               childtitle:'sql日志',
-              icon:'el-icon-view'
+              icon:'el-icon-view',
+              show:true,
             },
             {
               index:'/page4',
               childtitle:'用户日志',
-              icon:'el-icon-edit'
+              icon:'el-icon-edit',
+              show:true,
             },
           ]
         }
@@ -88,10 +104,10 @@ export default {
          this.isCollapse = !this.isCollapse
        },
        handleOpen (key, keyPath) {
-         console.log(key, keyPath)
+         // console.log(key, keyPath)
        },
        handleClose (key, keyPath) {
-         console.log(key, keyPath)
+         // console.log(key, keyPath)
        },
        
         quitFullscreen() {
